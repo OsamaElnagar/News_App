@@ -30,11 +30,11 @@ void main() async {
   }
   DioHelper.init();
   await CacheHelper.init();
-  bool? isDark = CacheHelper.getBoolean(key: 'isDark');
+  bool? isDark = CacheHelper.getBoolean(key: 'isDark') ?? false ;
 
   BlocOverrides.runZoned(
     () {
-      runApp(MyApp(isDark: isDark!,));
+      runApp(MyApp(isDark: isDark,));
     },
     blocObserver: MyBlocObserver(),
   );
