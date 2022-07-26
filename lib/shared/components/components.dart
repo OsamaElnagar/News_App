@@ -1,17 +1,62 @@
 import 'dart:io';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:news/shared/Bloc/cubit.dart';
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';import 'package:news/shared/Bloc/cubit.dart';
+
 import '../../modules/web_view.dart';
 
-Widget buildArticleItem(article, context, index) => Container(
+Widget buildArticleItem(article, context, index) {
+
+  Future<void>? _launched;
+
+  Future<void> _launchInBrowser(String url) async {
+    if (await UrlLauncherPlatform.instance.canLaunch(url)) {
+      await UrlLauncherPlatform.instance.launch(
+        url,
+        useSafariVC: false,
+        useWebView: false,
+        enableJavaScript: false,
+        enableDomStorage: false,
+        universalLinksOnly: false,
+        headers: <String, String>{},
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _launchStatus(BuildContext context, AsyncSnapshot<void> snapshot) {
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    } else {
+      return const Text('');
+    }
+  }
+
+  return Container(
       color: Platform.isWindows && NewsCubit.get(context).selectedItem == index
           ? Colors.deepOrange
           : null,
       child: InkWell(
+        onDoubleTap: () {
+          if (Platform.isWindows) {
+            NewsCubit.get(context).selectedCategoryItem(index);
+            _launched = _launchInBrowser(article['url']).then((value) => _launched).catchError((onError){
+              pint(onError.toString());
+            });
+          } else {
+            navigateTo(
+                context,
+                WebViewExample(
+                  url: '${article['url']}',
+                ));
+          }
+        },
         onTap: () {
           if (Platform.isWindows) {
-            NewsCubit.get(context).selectedBusinessItem(index);
+            NewsCubit.get(context).selectedCategoryItem(index);
+
           } else {
             navigateTo(
                 context,
@@ -73,8 +118,12 @@ Widget buildArticleItem(article, context, index) => Container(
         ),
       ),
     );
+}
 
-Widget articleBuilder(data, context,) => ConditionalBuilder(
+
+
+Widget articleBuilder(data, context, {bool? search = false}) =>
+    ConditionalBuilder(
       condition: data.length > 0,
       builder: (context) => ListView.separated(
         physics: const BouncingScrollPhysics(),
@@ -92,9 +141,11 @@ Widget articleBuilder(data, context,) => ConditionalBuilder(
         ),
         itemCount: data.length,
       ),
-      fallback: (context) => const Center(
-        child: CircularProgressIndicator(),
-      ),
+      fallback: (context) => search!
+          ? Container()
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
     );
 
 void navigateTo(context, widget) => Navigator.push(
@@ -111,3 +162,8 @@ Future navigate2(context, widget) => Navigator.pushAndRemoveUntil(
       ),
       (route) => false,
     );
+
+void pint(String input)
+{
+  debugPrint(input);
+}

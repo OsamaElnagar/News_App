@@ -4,9 +4,11 @@ import 'package:news/shared/Bloc/states.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import '../shared/Bloc/cubit.dart';
 import '../shared/components/components.dart';
-
 class Business extends StatelessWidget {
-  const Business({Key? key}) : super(key: key);
+   Business({Key? key}) : super(key: key);
+
+
+
 
   @override
   Widget build(BuildContext context) {

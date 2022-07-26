@@ -24,7 +24,12 @@ dependencies:
   webview_flutter: ^3.0.2
   desktop_window: ^0.4.0
   responsive_builder: ^0.4.2
-
+  url_launcher_windows: ^3.0.1
+#  animated_bottom_navigation_bar: ^0.3.3
+#  awesome_dialog: ^2.2.1
+#  flutter_svg: ^1.1.1+1
+#  animated_splash_screen: ^1.2.0
+  url_launcher: ^6.1.5
 
 dev_dependencies:
   flutter_test:

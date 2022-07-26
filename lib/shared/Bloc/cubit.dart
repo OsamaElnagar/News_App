@@ -17,8 +17,8 @@ class NewsCubit extends Cubit<NewsStates> {
   int currentIndex = 0;
 
   List<Widget> screens = [
-    const Business(),
-    const Sports(),
+     Business(),
+     const Sports(),
     const Science(),
   ];
 
@@ -38,7 +38,7 @@ class NewsCubit extends Cubit<NewsStates> {
 
   List<dynamic> business = [];
   List<bool> businessSelectedItem = [];
-  late int selectedItem = 1;
+  late int selectedItem = 0;
   List<dynamic> sports = [];
   List<dynamic> science = [];
   List<dynamic> search = [];
@@ -64,9 +64,9 @@ class NewsCubit extends Cubit<NewsStates> {
     });
   }
 
-  void selectedBusinessItem(index) {
+  void selectedCategoryItem(index) {
     selectedItem = index;
-    emit(NewsBusinessSelectedItemState());
+    emit(NewsCategorySelectedItemState());
   }
 
   void getSports() {
